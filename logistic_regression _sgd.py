@@ -46,16 +46,20 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
   for iter in range (0,max_iter):
     y = sps.expit(np.dot(X[0, :], w))
-    e = -np.mean(np.multiply(t[0], np.log(y)) + np.multiply((1 - t[0]), np.log(1 - y)))
-
+    #e = -np.mean(np.multiply(t[0], np.log(y)) + np.multiply((1 - t[0]), np.log(1 - y)))
+    e = 0
     for i in range (0,200):
       # Compute output using current w on all data X.
 
 
       y = sps.expit(np.dot(X[i,:],w))
-
       # e is the error, negative log-likelihood (Eqn 4.90)
-      e = (-np.mean(np.multiply(t[i],np.log(y+0.0000001)) + np.multiply((1-t[i]),np.log(1-y +0.0000001)))+e)/2
+      #if y==0:
+      #  y+=0.00000001
+      #if y==1:
+      #  y-=0.00000001
+      #y = np.clip(y, 1e-16, 1 - 1e-16)
+      #e += (-np.mean(np.multiply(t[i],np.log(y)) + np.multiply((1-t[i]),np.log(1-y))))
       #print e
       # Add this error to the end of error vector.
 
@@ -66,7 +70,10 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
       # Update w, *subtracting* a step in the error derivative since we're minimizing
       w_old = w
       w = w - eta*grad_e
-
+    #e = e /X.shape[0]
+    y = sps.expit(np.dot(X, w))
+    y = np.clip(y, 1e-16, 1 - 1e-16)
+    e = -np.mean(np.multiply(t, np.log(y)) + np.multiply((1 - t), np.log(1 - y)))
       # Plot current separator and data.  Useful for interactive mode / debugging.
       # plt.figure(DATA_FIG)
       # plt.clf()
@@ -80,7 +87,7 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
 
       # Print some information.
-    #print 'epoch {0:d}, negative log-likelihood {1:.4f}, w={2}'.format(iter, e, w.T)
+    print 'epoch {0:d}, negative log-likelihood {1:.4f}, w={2}'.format(iter, e, w.T)
 
     e_all.append(e)
       # Stop iterating if error doesn't change more than tol.

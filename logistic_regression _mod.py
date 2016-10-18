@@ -54,7 +54,6 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
     # Gradient of the error, using Eqn 4.91
     grad_e = np.mean(np.multiply((y - t), X.T), axis=1)
-    print grad_e
     # Update w, *subtracting* a step in the error derivative since we're minimizing
     w_old = w
     w = w - eta*grad_e
