@@ -41,12 +41,7 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
   # Error values over all iterations.
   e_all = []
-  plt.figure(str(eta))
-  plt.rcParams.update({'font.size': 15})
-  plt.title('Separator in slope-intercept space' + str(eta))
-  plt.xlabel('slope')
-  plt.ylabel('intercept')
-  plt.axis([-5, 5, -10, 0])
+
   for iter in range (0,max_iter):
     # Compute output using current w on all data X.
     y = sps.expit(np.dot(X,w))
@@ -59,7 +54,7 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
     # Gradient of the error, using Eqn 4.91
     grad_e = np.mean(np.multiply((y - t), X.T), axis=1)
-
+    print grad_e
     # Update w, *subtracting* a step in the error derivative since we're minimizing
     w_old = w
     w = w - eta*grad_e
@@ -74,8 +69,6 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
 
     # Add next step of separator in m-b space.
-    plt.figure(str(eta))
-    a2.plot_mb(w,w_old)
 
 
     # Print some information.
@@ -88,9 +81,10 @@ for eta in [0.5,0.3,0.1,0.05,0.01]:
 
 
   # Plot error over iterations
-  plt.figure(str(eta)+" error")
+  plt.figure("error")
   plt.plot(e_all)
   plt.ylabel('Negative log likelihood')
-  plt.title('Training logistic regression '+str(eta))
+  plt.title('Training logistic regression ')
   plt.xlabel('Epoch')
+plt.legend([0.5,0.3,0.1,0.05,0.01])
 plt.show()
