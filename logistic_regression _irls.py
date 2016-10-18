@@ -44,22 +44,21 @@ e_all = []
 for iter in range (0,max_iter):
   # Compute output using current w on all data X.
   y = sps.expit(np.dot(X,w))
-
+  yy = np.clip(y, 1e-16, 1 - 1e-16)
   # e is the error, negative log-likelihood (Eqn 4.90)
-  e = -np.mean(np.multiply(t,np.log(y)) + np.multiply((1-t),np.log(1-y)))
+  e = -np.mean(np.multiply(t,np.log(yy)) + np.multiply((1-t),np.log(1-yy)))
 
   # Add this error to the end of error vector.
   e_all.append(e)
   #print X.T.dot(X)
  # print np.transpose(np.matrix.multiply(X.T,X))\
-  print X.shape
-  print np.multiply(X.T,X)
-  rewaighted = np.multiply( np.transpose(X.T*X),(X.T*t))
-  #rewaighted = np.transpose(X.T.dot(X)).dot((X.T.dot(t)))
-  print rewaighted
+
+  Rnn = np.diag( y*(np.ones(y.shape[0])-y))
+  rewaighted = np.linalg.inv(X.T.dot(Rnn.dot(X))).dot(X.T.dot(y-t))
   # Gradient of the error, using Eqn 4.91
   w = w - rewaighted
-
+  print w
+  print rewaighted
   # Plot current separator and data.  Useful for interactive mode / debugging.
   # plt.figure(DATA_FIG)
   # plt.clf()
